@@ -1,14 +1,14 @@
 package service
 
 import (
-	errorhandler "goPractice/errorHandler"
+	"goPractice/errorhandler"
 	"goPractice/repository"
 )
 
 type TaskService interface {
-	createTaskCounter()
-	getCounterProgress()
-	removeCounterTask()
+	CreateTaskCounter(start, end int)
+	GetCounterProgress(taskId int)
+	RemoveCounterTask(int)
 }
 
 type taskService struct {
@@ -23,15 +23,14 @@ func NewTaskService(database repository.TaskRepository, errorHandler errorhandle
 	}
 }
 
-func (service *taskService) createTaskCounter() {
+func (service *taskService) CreateTaskCounter(start, end int) {
 
 }
 
-func (service *taskService) getCounterProgress() {
+func (service *taskService) GetCounterProgress(taskId int) {
 
 }
 
-func (service *taskService) removeCounterTask() {
+func (service *taskService) RemoveCounterTask(taskId int) {
 
 }
-

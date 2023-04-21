@@ -1,28 +1,31 @@
 package routes
 
 import (
-	"goPractice/controller"
+	"goPractice/controllers"
 
 	"github.com/gin-gonic/gin"
 )
 
 type TaskRoutes interface {
-	RegisterHandlers(server *gin.Engine, controller controller.Controller)
+	RegisterHandlers()
 }
 
 type taskRoutes struct {
-	server     *gin.Engine
-	controller controller.Controller
+	engine     *gin.Engine
+	controller controllers.TaskController
 }
 
-func NewTaskRoutes(server *gin.Engine, controller controller.Controller) TaskRoutes {
+func NewTaskRoutes(engine *gin.Engine, controller controllers.TaskController) TaskRoutes {
 
 	return &taskRoutes{
-		server:     server,
+		engine:     engine,
 		controller: controller,
 	}
 }
 
-func (taskRoutes *taskRoutes) RegisterHandlers(server *gin.Engine, controller controller.Controller) {
+func (taskRoutes *taskRoutes) RegisterHandlers() {
+	taskRoutes.engine.POST("/createTaskCounter", taskRoutes.controller.CreateTaskCounter)
+	taskRoutes.engine.GET("/getCounterProgress/:taskId", taskRoutes.controller.GetCounterProgress)
+	taskRoutes.engine.DELETE("/removeCounterTask/:taskId", taskRoutes.controller.RemoveCounterTask)
 
 }

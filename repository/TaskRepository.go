@@ -2,12 +2,12 @@ package repository
 
 import (
 	"database/sql"
-	errorhandler "goPractice/errorHandler"
+	"goPractice/errorhandler"
 )
 
 type TaskRepository interface {
-	saveTaskCounters(x, y, taskId int) (bool, error)
-	removeCounterTask(taskId int) (bool, error)
+	SaveTaskCounters(x, y, taskId int) (bool, error)
+	RemoveCounterTask(taskId int) (bool, error)
 }
 
 type taskRepository struct {
@@ -23,10 +23,10 @@ func NewDataBase(db sql.DB, errorHandler errorhandler.ErrorHandler) TaskReposito
 	}
 }
 
-func (db *taskRepository) saveTaskCounters(x, y, taskId int) (bool, error) {
+func (db *taskRepository) SaveTaskCounters(x, y, taskId int) (bool, error) {
 	return true, nil
 }
 
-func (db *taskRepository) removeCounterTask(taskId int) (bool, error) {
+func (db *taskRepository) RemoveCounterTask(taskId int) (bool, error) {
 	return true, nil
 }

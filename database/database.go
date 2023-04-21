@@ -2,9 +2,10 @@ package database
 
 import (
 	"database/sql"
-	errorhandler "goPractice/errorHandler"
+	"goPractice/errorhandler"
 	"sync"
 
+	_ "github.com/go-sql-driver/mysql"
 	log "github.com/sirupsen/logrus"
 )
 

@@ -3,10 +3,11 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"goPractice/controller"
+	"goPractice/controllers"
 	"goPractice/database"
-	errorhandler "goPractice/errorHandler"
+	"goPractice/errorhandler"
 	"goPractice/repository"
+	"goPractice/routes"
 	"goPractice/service"
 
 	"github.com/gin-gonic/gin"
@@ -14,9 +15,11 @@ import (
 )
 
 var (
-	router       *gin.Engine
 	dbInstance   *sql.DB
 	errorHandler errorhandler.ErrorHandler
+	repo         repository.TaskRepository
+	serv         service.TaskService
+	controller   controllers.TaskController
 )
 
 func main() {
@@ -28,8 +31,13 @@ func main() {
 }
 
 func createServer() {
-	router = gin.Default()
+	router := gin.Default()
 	intializeLayers()
+	routes.NewTaskRoutes(router, controller)
+	err := router.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func initDatabase() {
@@ -43,7 +51,7 @@ func createErrorHandler() {
 }
 
 func intializeLayers() {
-	repository = repository.NewDataBase(*dbInstance, errorHandler)
-	service = service.NewTaskService(repository, errorHandler)
-	controller = controller.NewController(service, errorHandler)
+	repo = repository.NewDataBase(*dbInstance, errorHandler)
+	serv = service.NewTaskService(repo, errorHandler)
+	controller = controllers.NewTaskController(serv, errorHandler)
 }
