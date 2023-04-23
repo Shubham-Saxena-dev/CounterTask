@@ -37,7 +37,9 @@ func (controller *taskController) CreateTaskCounter(ctx *gin.Context) {
 		return
 	}
 
-	controller.service.CreateTaskCounter(request.Start, request.End)
+	taskId := controller.service.CreateTaskCounter(request)
+	ctx.JSON(http.StatusOK, taskId)
+
 }
 
 func (controller *taskController) GetCounterProgress(ctx *gin.Context) {

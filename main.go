@@ -1,7 +1,7 @@
 package main
 
 import (
-	"database/sql"
+	"context"
 	"fmt"
 	"goPractice/controllers"
 	"goPractice/database"
@@ -12,14 +12,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 var (
-	dbInstance   *sql.DB
+	dbInstance   *mongo.Collection
 	errorHandler errorhandler.ErrorHandler
 	repo         repository.TaskRepository
 	serv         service.TaskService
 	controller   controllers.TaskController
+	ctx          context.Context
 )
 
 func main() {
@@ -33,7 +35,7 @@ func main() {
 func createServer() {
 	router := gin.Default()
 	intializeLayers()
-	routes.NewTaskRoutes(router, controller)
+	routes.NewTaskRoutes(router, controller).RegisterHandlers()
 	err := router.Run()
 	if err != nil {
 		fmt.Println(err)
@@ -51,7 +53,7 @@ func createErrorHandler() {
 }
 
 func intializeLayers() {
-	repo = repository.NewDataBase(*dbInstance, errorHandler)
+	repo = repository.NewDataBase(*dbInstance, ctx, errorHandler)
 	serv = service.NewTaskService(repo, errorHandler)
 	controller = controllers.NewTaskController(serv, errorHandler)
 }

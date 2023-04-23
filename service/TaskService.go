@@ -2,11 +2,14 @@ package service
 
 import (
 	"goPractice/errorhandler"
+	"goPractice/models"
 	"goPractice/repository"
+
+	"github.com/google/uuid"
 )
 
 type TaskService interface {
-	CreateTaskCounter(start, end int)
+	CreateTaskCounter(request models.TaskCounterRequest) uuid.UUID
 	GetCounterProgress(taskId int)
 	RemoveCounterTask(int)
 }
@@ -23,7 +26,9 @@ func NewTaskService(database repository.TaskRepository, errorHandler errorhandle
 	}
 }
 
-func (service *taskService) CreateTaskCounter(start, end int) {
+func (service *taskService) CreateTaskCounter(request models.TaskCounterRequest) uuid.UUID {
+	request.TaskId = uuid.New()
+	return service.database.SaveTaskCounters(request)
 
 }
 

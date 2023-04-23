@@ -1,25 +1,26 @@
 package database
 
 import (
-	"database/sql"
+	"context"
 	"goPractice/errorhandler"
 	"sync"
 
-	_ "github.com/go-sql-driver/mysql"
 	log "github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const (
-	ConnectionString = "root:admin@/myDb"
+	ConnectionString = "mongodb://localhost:27017"
 	Type             = "mysql"
 )
 
 var (
-	dbInstance *sql.DB
+	dbInstance *mongo.Collection
 	once       sync.Once
 )
 
-func GetDatabaseConnection(errorHandler errorhandler.ErrorHandler) *sql.DB {
+func GetDatabaseConnection(errorHandler errorhandler.ErrorHandler) *mongo.Collection {
 
 	if dbInstance == nil {
 		once.Do(
@@ -30,28 +31,24 @@ func GetDatabaseConnection(errorHandler errorhandler.ErrorHandler) *sql.DB {
 	return dbInstance
 }
 
-func newDatabaseConnection(errorHandler errorhandler.ErrorHandler) *sql.DB {
+func newDatabaseConnection(errorHandler errorhandler.ErrorHandler) *mongo.Collection {
 
-	db, err := sql.Open(Type, ConnectionString)
-
-	if err != nil {
-		log.Error(err)
-	}
-
-	err = db.Ping()
-	if err != nil {
-		log.Error(err)
-	}
-
-	db.Query("DROP table Tasks")
-	_, err = db.Query("CREATE TABLE Tasks(taskId int, start int, end int);")
+	db, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(ConnectionString))
 
 	if err != nil {
 		log.Error(err)
-
+		panic(err)
 	}
+
+	err = db.Ping(context.TODO(), nil)
+	if err != nil {
+		log.Error(err)
+		panic(err)
+	}
+
+	usersCollection := db.Database("tasks").Collection("counter")
 
 	log.Info("Connected to database")
 
-	return db
+	return usersCollection
 }
