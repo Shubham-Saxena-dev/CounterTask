@@ -1,10 +1,9 @@
 package utils
 
 import (
+	"fmt"
 	"goPractice/models"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 const (
@@ -16,26 +15,51 @@ const (
 type progress struct {
 	status   string
 	progress int
+	start    int
+	end      int
+	cancel   bool
 }
 
 type Progress interface {
 	GetStatus() string
 	GetProgress() int
+	CancelTask()
+	Calculate()
 }
 
-var MyMap map[uuid.UUID]int
-var status string
-
-func calculate(request models.TaskCounterRequest) int {
-
-	for i := request.Start; i <= request.End; i++ {
-		time.Sleep(1000)
-
+func NewProgressTask(request models.TaskCounterRequest) Progress {
+	return &progress{
+		start:    request.Start,
+		end:      request.End,
+		progress: 0,
+		status:   IN_PROGRESS,
 	}
-
-	return 100
 }
 
-func (p *progress) GetProgress() {
-	return
+func (p *progress) Calculate() {
+	fmt.Println("Task started")
+	for i := p.start; i <= p.end; i++ {
+		time.Sleep(1 * time.Second)
+		p.progress = (i - p.start) * 100 / (p.end - p.start)
+
+		if p.cancel {
+			fmt.Println("Task Cancelled")
+			p.status = CANCELLED
+			break
+		}
+	}
+	fmt.Println("Task finished")
+	p.status = COMPLETED
+}
+
+func (p *progress) GetProgress() int {
+	return p.progress
+}
+
+func (p *progress) GetStatus() string {
+	return p.status
+}
+
+func (p *progress) CancelTask() {
+	p.cancel = true
 }

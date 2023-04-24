@@ -25,7 +25,7 @@ func NewTaskRoutes(engine *gin.Engine, controller controllers.TaskController) Ta
 
 func (taskRoutes *taskRoutes) RegisterHandlers() {
 	taskRoutes.engine.POST("/createTaskCounter", taskRoutes.controller.CreateTaskCounter)
-	taskRoutes.engine.GET("/getCounterProgress/:taskId", taskRoutes.controller.GetCounterProgress)
+	taskRoutes.engine.GET("/getCounterProgress/:taskId", taskRoutes.controller.GetTaskProgress)
 	taskRoutes.engine.DELETE("/removeCounterTask/:taskId", taskRoutes.controller.RemoveCounterTask)
 
 }

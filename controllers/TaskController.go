@@ -5,14 +5,13 @@ import (
 	"goPractice/models"
 	"goPractice/service"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 type TaskController interface {
 	CreateTaskCounter(ctx *gin.Context)
-	GetCounterProgress(ctx *gin.Context)
+	GetTaskProgress(ctx *gin.Context)
 	RemoveCounterTask(ctx *gin.Context)
 }
 
@@ -39,21 +38,17 @@ func (controller *taskController) CreateTaskCounter(ctx *gin.Context) {
 
 	taskId := controller.service.CreateTaskCounter(request)
 	ctx.JSON(http.StatusOK, taskId)
-
 }
 
-func (controller *taskController) GetCounterProgress(ctx *gin.Context) {
-	taskId, err := strconv.Atoi(ctx.Param("taskId"))
-	if err != nil {
-		controller.errorHandler.HandleError(err)
-	}
-	controller.service.GetCounterProgress(taskId)
+func (controller *taskController) GetTaskProgress(ctx *gin.Context) {
+	taskId := ctx.Param("taskId")
+	progress := controller.service.GetTaskProgress(taskId)
+	ctx.JSON(http.StatusOK, progress)
+
 }
 
 func (controller *taskController) RemoveCounterTask(ctx *gin.Context) {
-	taskId, err := strconv.Atoi(ctx.Param("taskId"))
-	if err != nil {
-		controller.errorHandler.HandleError(err)
-	}
-	controller.service.RemoveCounterTask(taskId)
+	taskId := ctx.Param("taskId")
+	status := controller.service.RemoveCounterTask(taskId)
+	ctx.JSON(http.StatusOK, status)
 }

@@ -9,9 +9,9 @@ import (
 )
 
 type TaskService interface {
-	CreateTaskCounter(request models.TaskCounterRequest) uuid.UUID
-	GetCounterProgress(taskId int)
-	RemoveCounterTask(int)
+	CreateTaskCounter(request models.TaskCounterRequest) string
+	GetTaskProgress(taskId string) int
+	RemoveCounterTask(string) string
 }
 
 type taskService struct {
@@ -26,16 +26,17 @@ func NewTaskService(database repository.TaskRepository, errorHandler errorhandle
 	}
 }
 
-func (service *taskService) CreateTaskCounter(request models.TaskCounterRequest) uuid.UUID {
-	request.TaskId = uuid.New()
+func (service *taskService) CreateTaskCounter(request models.TaskCounterRequest) string {
+	request.TaskId = uuid.NewString()
 	return service.database.SaveTaskCounters(request)
 
 }
 
-func (service *taskService) GetCounterProgress(taskId int) {
-
+func (service *taskService) GetTaskProgress(taskId string) int {
+	return service.database.GetTaskProgress(taskId)
 }
 
-func (service *taskService) RemoveCounterTask(taskId int) {
+func (service *taskService) RemoveCounterTask(taskId string) string {
+	return service.database.RemoveCounterTask(taskId)
 
 }
