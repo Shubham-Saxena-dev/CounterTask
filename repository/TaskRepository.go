@@ -56,7 +56,7 @@ func (db *taskRepository) SaveTaskCounters(request models.TaskCounterRequest) st
 func (db *taskRepository) RemoveCounterTask(taskId string) string {
 	value, ok := taskMap[taskId]
 	if !ok {
-		return "Task not found"
+		return "NOT_FOUND"
 	}
 	value.CancelTask()
 
